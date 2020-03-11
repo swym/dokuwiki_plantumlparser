@@ -41,7 +41,8 @@ class syntax_plugin_plantumlparser_injector extends DokuWiki_Syntax_Plugin {
     public function handle($match, $state, $pos, Doku_Handler $handler)
     {
         $markup        = str_replace('</' . $this->TAG . '>', '', str_replace('<' . $this->TAG . '>', '', $match));
-        $diagramObject = new PlantUmlDiagram($markup);
+        $baseUrl       = $this->getConf('base_url');
+        $diagramObject = new PlantUmlDiagram($markup, $baseUrl);
 
         return [
             'svg' => strstr($diagramObject->getSVG(), "<svg"),
@@ -79,12 +80,15 @@ class syntax_plugin_plantumlparser_injector extends DokuWiki_Syntax_Plugin {
             $renderer->doc .= "<span>".$data['markup']."</span>";
             $renderer->doc .= "</object>";
         }
-        $renderer->doc .= "<div id=\"plantumlparse_link_section\">";
-        $renderer->doc .= "<a target='_blank' href='".$data['url']['svg']."'>SVG</a> | ";
-        $renderer->doc .= "<a target='_blank' href='".$data['url']['png']."'>PNG</a> | ";
-        $renderer->doc .= "<a target='_blank' href='".$data['url']['txt']."'>TXT</a>";
-        $renderer->doc .= "</div>";
-        $renderer->doc .= "</div>";
+
+        if($this->getConf('show_download') == 1) {
+            $renderer->doc .= "<div id=\"plantumlparse_link_section\">";
+            $renderer->doc .= "<a target='_blank' href='".$data['url']['svg']."'>SVG</a> | ";
+            $renderer->doc .= "<a target='_blank' href='".$data['url']['png']."'>PNG</a> | ";
+            $renderer->doc .= "<a target='_blank' href='".$data['url']['txt']."'>TXT</a>";
+            $renderer->doc .= "</div>";
+            $renderer->doc .= "</div>";
+        }
 
         return true;
     }
