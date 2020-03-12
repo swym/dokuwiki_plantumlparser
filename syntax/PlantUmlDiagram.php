@@ -3,12 +3,12 @@ if (!class_exists('PlantUmlDiagram')) {
     class PlantUmlDiagram {
         private $markup;
         private $encoded;
-        private $basePath;
+	/*        private $basePath = "https://www.plantuml.com/plantuml/"; */
+	private $basePath = "http://riverport.agfeo.de:8086/";
 
-        public function __construct($markup, $basePath) {
+        public function __construct($markup) {
             $this->markup = nl2br($markup);
             $this->encoded = $this->encodep($markup);
-            $this->basePath = $basePath;
         }
 
         public function getMarkup() {
@@ -23,6 +23,11 @@ if (!class_exists('PlantUmlDiagram')) {
         public function getSVG()
         {
             return (new DokuHTTPClient())->get($this->getSVGDiagramUrl());
+        }
+
+        public function getTXT()
+        {
+            return (new DokuHTTPClient())->get($this->getTXTDiagramUrl());
         }
 
         public function getSVGDiagramUrl() {
